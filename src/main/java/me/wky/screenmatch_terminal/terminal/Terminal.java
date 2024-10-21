@@ -38,11 +38,16 @@ public class Terminal {
             seasons.add(seasonData);
         }
 
-        for (var season : seasons) {
-            System.out.println(season);
-        }
+        /*
+        for (SeasonData season : seasons) {
+            for (EpisodeData episode : season.episodes()) {
+                System.out.println(episode.title());
+            }
+         */
+
+        seasons.forEach(
+                s -> s.episodes().forEach(
+                        e -> System.out.println(e.title())));
 
     }
-
-
 }
