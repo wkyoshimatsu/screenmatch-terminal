@@ -13,4 +13,11 @@ public class ScreenmatchTerminalApplication implements CommandLineRunner {
 		SpringApplication.run(ScreenmatchTerminalApplication.class, args);
 	}
 
+	@Override
+	public void run(String... args) throws Exception {
+		var url = "http://www.omdbapi.com/?apikey=" + OMDBAPI_KEY + "&t=Friends";
+		var apiConsumer = new APIConsumer();
+		var json = apiConsumer.getJsonByUrl(url);
+		System.out.println(json);
+	}
 }
