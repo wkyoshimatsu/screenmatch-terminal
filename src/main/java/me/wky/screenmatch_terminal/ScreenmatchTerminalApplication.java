@@ -1,6 +1,8 @@
 package me.wky.screenmatch_terminal;
 
+import me.wky.screenmatch_terminal.model.SerieData;
 import me.wky.screenmatch_terminal.service.APIConsumer;
+import me.wky.screenmatch_terminal.service.DataConverter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,5 +21,9 @@ public class ScreenmatchTerminalApplication implements CommandLineRunner {
 		var apiConsumer = new APIConsumer();
 		var json = apiConsumer.getJsonByUrl(url);
 		System.out.println(json);
+
+		var dataConverter = new DataConverter();
+		var serieData = dataConverter.convert(json, SerieData.class);
+		System.out.println(serieData);
 	}
 }
