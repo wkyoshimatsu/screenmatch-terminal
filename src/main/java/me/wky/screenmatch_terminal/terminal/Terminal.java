@@ -1,5 +1,6 @@
 package me.wky.screenmatch_terminal.terminal;
 
+import me.wky.screenmatch_terminal.model.Episode;
 import me.wky.screenmatch_terminal.model.EpisodeData;
 import me.wky.screenmatch_terminal.model.SeasonData;
 import me.wky.screenmatch_terminal.model.SerieData;
@@ -55,6 +56,8 @@ public class Terminal {
         seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
         */
 
+        System.out.println("Top 5 episódios com melhor avaliação:");
+
         List<EpisodeData> episodesList = seasons.stream()
                 .flatMap(s -> s.episodes().stream())
                 .collect(Collectors.toList());
@@ -64,5 +67,19 @@ public class Terminal {
                 .sorted(Comparator.comparing(EpisodeData::rating).reversed())
                 .limit(5)
                 .forEach(System.out::println);
+
+        System.out.println("Top 5 episódios com melhor avaliação (usando novo constutor):");
+
+        List<Episode> episodes = seasons.stream()
+                .flatMap(s -> s.episodes().stream()
+                        .map(ed -> new Episode(s.season(), ed)))
+                        .collect(Collectors.toList());
+
+        episodes.stream()
+                .sorted(Comparator.comparing(Episode::getRating).reversed())
+                .limit(5)
+                .forEach(System.out::println);
+
+
     }
 }
