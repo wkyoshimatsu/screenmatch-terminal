@@ -55,5 +55,14 @@ public class Terminal {
         seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
         */
 
+        List<EpisodeData> episodesList = seasons.stream()
+                .flatMap(s -> s.episodes().stream())
+                .collect(Collectors.toList());
+
+        episodesList.stream()
+                .filter(e -> e.rating() != null && !e.rating().equals("N/A"))
+                .sorted(Comparator.comparing(EpisodeData::rating).reversed())
+                .limit(5)
+                .forEach(System.out::println);
     }
 }
