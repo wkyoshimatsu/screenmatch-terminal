@@ -1,13 +1,16 @@
 package me.wky.screenmatch_terminal.terminal;
 
+import me.wky.screenmatch_terminal.model.EpisodeData;
 import me.wky.screenmatch_terminal.model.SeasonData;
 import me.wky.screenmatch_terminal.model.SerieData;
 import me.wky.screenmatch_terminal.service.APIConsumer;
 import me.wky.screenmatch_terminal.service.DataConverter;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Terminal {
     private final String OMDBAPI_KEY= System.getenv("OMDBAPI_KEY");
@@ -39,15 +42,18 @@ public class Terminal {
         }
 
         /*
+        Using for loop:
+
         for (SeasonData season : seasons) {
             for (EpisodeData episode : season.episodes()) {
                 System.out.println(episode.title());
             }
          */
+        /*
+        Using for-each with lambda:
 
-        seasons.forEach(
-                s -> s.episodes().forEach(
-                        e -> System.out.println(e.title())));
+        seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
+        */
 
     }
 }
