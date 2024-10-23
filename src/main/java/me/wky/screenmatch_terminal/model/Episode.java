@@ -7,7 +7,8 @@ public class Episode {
     private String title;
     private Integer episode;
     private Double rating;
-    private LocalDate released;
+
+    private LocalDate releaseDate;
 
     public Episode(Integer season, EpisodeData episodeData) {
         this.season = season;
@@ -21,9 +22,9 @@ public class Episode {
         }
 
         try {
-            this.released = LocalDate.parse(episodeData.released());
+            this.releaseDate = LocalDate.parse(episodeData.released());
         } catch (Exception e) {
-            this.released = null;
+            this.releaseDate = null;
         }
     }
 
@@ -33,10 +34,22 @@ public class Episode {
                 ", title='" + title + '\'' +
                 ", episode=" + episode +
                 ", rating='" + rating + '\'' +
-                ", released='" + released;
+                ", released='" + releaseDate;
     }
 
     public Double getRating() {
         return rating;
+    }
+
+    public LocalDate getReleaseDate() {
+        return releaseDate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public Integer getSeason() {
+        return season;
     }
 }

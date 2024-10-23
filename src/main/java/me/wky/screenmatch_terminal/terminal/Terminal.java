@@ -7,6 +7,8 @@ import me.wky.screenmatch_terminal.model.SerieData;
 import me.wky.screenmatch_terminal.service.APIConsumer;
 import me.wky.screenmatch_terminal.service.DataConverter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -56,7 +58,7 @@ public class Terminal {
         seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
         */
 
-        System.out.println("Top 5 episódios com melhor avaliação:");
+        System.out.println("\nTop 5 episódios com melhor avaliação:");
 
         List<EpisodeData> episodesList = seasons.stream()
                 .flatMap(s -> s.episodes().stream())
@@ -68,7 +70,7 @@ public class Terminal {
                 .limit(5)
                 .forEach(System.out::println);
 
-        System.out.println("Top 5 episódios com melhor avaliação (usando novo constutor):");
+        System.out.println("\nTop 5 episódios com melhor avaliação (usando novo constutor):");
 
         List<Episode> episodes = seasons.stream()
                 .flatMap(s -> s.episodes().stream()
@@ -80,6 +82,19 @@ public class Terminal {
                 .limit(5)
                 .forEach(System.out::println);
 
+        System.out.println("A partir de qual ano deseja ver os episódios?");
+        var year = scanner.nextInt();
 
+        LocalDate searchDate = LocalDate.of(year, 1, 1);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        episodes.stream()
+                .filter(e -> e.getReleaseDate() != null && e.getReleaseDate().isAfter(searchDate))
+                .forEach(e -> System.out.println(
+                        "Temporada: " + e.getSeason() +
+                        ", Episódio: " + e.getTitle() +
+                        ", Data de lançamento: " + e.getReleaseDate().format(formatter))
+                );
     }
 }
