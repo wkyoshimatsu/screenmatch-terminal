@@ -119,5 +119,14 @@ public class Terminal {
             System.out.println("Episódio não encontrado");
         }
 
+        //Seção 6: Média de avaliação por temporada
+        //Usando Collectors
+        Map<Integer, Double> averageRatingBySeason = episodes.stream()
+                .filter(e -> e.getRating() > 0.0)
+                .collect(Collectors.groupingBy(Episode::getSeason,
+                        Collectors.averagingDouble(Episode::getRating)));
+
+        System.out.println("\nMédia de avaliação por temporada:\n" + averageRatingBySeason);
+
     }
 }
