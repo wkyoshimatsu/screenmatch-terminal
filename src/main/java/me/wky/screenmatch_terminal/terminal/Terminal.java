@@ -128,5 +128,15 @@ public class Terminal {
 
         System.out.println("\nMédia de avaliação por temporada:\n" + averageRatingBySeason);
 
+        //Seção 7: Estatísticas de avaliação
+        //Usando DoubleSummaryStatistics
+        DoubleSummaryStatistics est = episodes.stream()
+                .filter(e -> e.getRating() > 0.0)
+                .collect(Collectors.summarizingDouble(Episode::getRating));
+        //System.out.println("\nEstatísticas de avaliação:\n" + est);
+        System.out.println("Quantidade de avaliações:" + est.getCount());
+        System.out.println("Média de avaliação:" + est.getAverage());
+        System.out.println("Menor avaliação: " + est.getMin());
+        System.out.println("Maior avaliação:" + est.getMax());
     }
 }
