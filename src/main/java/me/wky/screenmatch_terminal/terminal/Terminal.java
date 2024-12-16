@@ -101,5 +101,23 @@ public class Terminal {
                         ", Episódio: " + e.getTitle() +
                         ", Data de lançamento: " + e.getReleaseDate().format(formatter))
                 );
+
+        //Seção 5: Busca por qual temporada o episódio pertence
+        //Usando Optional
+        System.out.println("\nBusca por qual temporada o episódio pertence\nDigite o trecho do título do episódio");
+        scanner.nextLine(); //Usado para limpar o buffer
+        var titleExcerpt = scanner.nextLine().toLowerCase();
+        System.out.println("Buscando por: " + titleExcerpt);
+        Optional<Episode> episodeSearchedByTitle = episodes.stream()
+                .filter(e -> e.getTitle().toLowerCase().contains(titleExcerpt))
+                .findFirst();
+
+        if (episodeSearchedByTitle.isPresent()) {
+            System.out.println("O episódio " + episodeSearchedByTitle.get().getTitle() +
+                    " pertence à temporada " + episodeSearchedByTitle.get().getSeason());
+        } else {
+            System.out.println("Episódio não encontrado");
+        }
+
     }
 }
