@@ -9,10 +9,7 @@ import me.wky.screenmatch_terminal.service.DataConverter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Terminal {
@@ -27,6 +24,7 @@ public class Terminal {
     private DataConverter dataConverter = new DataConverter();
 
     public void printMenu() {
+        //Seção 1: Busca por série
         System.out.println("Digite o nome da série desejada:");
         var serieName = scanner.nextLine().toLowerCase().replace(" ", "+");
 
@@ -52,12 +50,15 @@ public class Terminal {
                 System.out.println(episode.title());
             }
          */
+
         /*
         Using for-each with lambda:
 
         seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
         */
 
+        //Seção 2: Top 5 episódios com melhor avaliação
+        //Usando stream e lambda
         System.out.println("\nTop 5 episódios com melhor avaliação:");
 
         List<EpisodeData> episodesList = seasons.stream()
@@ -70,6 +71,8 @@ public class Terminal {
                 .limit(5)
                 .forEach(System.out::println);
 
+        //Seção 3: Top 5 episódios com melhor avaliação (usando novo constutor)
+        //Usando novo construtor de Episode
         System.out.println("\nTop 5 episódios com melhor avaliação (usando novo constutor):");
 
         List<Episode> episodes = seasons.stream()
@@ -82,7 +85,9 @@ public class Terminal {
                 .limit(5)
                 .forEach(System.out::println);
 
-        System.out.println("A partir de qual ano deseja ver os episódios?");
+        //Seção 4: Busca por episódios a partir de um ano
+        //Usando LocalDate e DateTimeFormatter
+        System.out.println("\nA partir de qual ano deseja ver os episódios?");
         var year = scanner.nextInt();
 
         LocalDate searchDate = LocalDate.of(year, 1, 1);
