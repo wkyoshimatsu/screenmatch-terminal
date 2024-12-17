@@ -23,8 +23,7 @@ public class Terminal {
 
     private DataConverter dataConverter = new DataConverter();
 
-    public void printMenu() {
-        //Seção 1: Busca por série
+    public List<SeasonData> searchSerieByName() {
         System.out.println("Digite o nome da série desejada:");
         var serieName = scanner.nextLine().toLowerCase().replace(" ", "+");
 
@@ -56,9 +55,10 @@ public class Terminal {
 
         seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
         */
+        return seasons;
+    }
 
-        //Seção 2: Top 5 episódios com melhor avaliação
-        //Usando stream e lambda
+    public void printTopFiveEpisodes(List<SeasonData> seasons) {
         System.out.println("\nTop 5 episódios com melhor avaliação:");
 
         List<EpisodeData> episodesList = seasons.stream()
@@ -70,23 +70,18 @@ public class Terminal {
                 .sorted(Comparator.comparing(EpisodeData::rating).reversed())
                 .limit(5)
                 .forEach(System.out::println);
+    }
 
-        //Seção 3: Top 5 episódios com melhor avaliação (usando novo constutor)
-        //Usando novo construtor de Episode
+    public void printTopFiveEpisodesWithNewConstructor(List<Episode> episodes) {
         System.out.println("\nTop 5 episódios com melhor avaliação (usando novo constutor):");
-
-        List<Episode> episodes = seasons.stream()
-                .flatMap(s -> s.episodes().stream()
-                        .map(ed -> new Episode(s.season(), ed)))
-                        .collect(Collectors.toList());
 
         episodes.stream()
                 .sorted(Comparator.comparing(Episode::getRating).reversed())
                 .limit(5)
                 .forEach(System.out::println);
+    }
 
-        //Seção 4: Busca por episódios a partir de um ano
-        //Usando LocalDate e DateTimeFormatter
+    public void printSearchEpisodesFromYearOnwardsResults(List<Episode> episodes){
         System.out.println("\nA partir de qual ano deseja ver os episódios?");
         var year = scanner.nextInt();
 
@@ -98,12 +93,12 @@ public class Terminal {
                 .filter(e -> e.getReleaseDate() != null && e.getReleaseDate().isAfter(searchDate))
                 .forEach(e -> System.out.println(
                         "Temporada: " + e.getSeason() +
-                        ", Episódio: " + e.getTitle() +
-                        ", Data de lançamento: " + e.getReleaseDate().format(formatter))
+                                ", Episódio: " + e.getTitle() +
+                                ", Data de lançamento: " + e.getReleaseDate().format(formatter))
                 );
+    }
 
-        //Seção 5: Busca por qual temporada o episódio pertence
-        //Usando Optional
+    public void printSeasonByEpisodeExcerptResults(List<Episode> episodes){
         System.out.println("\nBusca por qual temporada o episódio pertence\nDigite o trecho do título do episódio");
         scanner.nextLine(); //Usado para limpar o buffer
         var titleExcerpt = scanner.nextLine().toLowerCase();
@@ -118,18 +113,18 @@ public class Terminal {
         } else {
             System.out.println("Episódio não encontrado");
         }
+    }
 
-        //Seção 6: Média de avaliação por temporada
-        //Usando Collectors
+    public void printSeasonsAverages(List<Episode> episodes){
         Map<Integer, Double> averageRatingBySeason = episodes.stream()
                 .filter(e -> e.getRating() > 0.0)
                 .collect(Collectors.groupingBy(Episode::getSeason,
                         Collectors.averagingDouble(Episode::getRating)));
 
         System.out.println("\nMédia de avaliação por temporada:\n" + averageRatingBySeason);
+    }
 
-        //Seção 7: Estatísticas de avaliação
-        //Usando DoubleSummaryStatistics
+    public void printSerieStatistics(List<Episode> episodes){
         DoubleSummaryStatistics est = episodes.stream()
                 .filter(e -> e.getRating() > 0.0)
                 .collect(Collectors.summarizingDouble(Episode::getRating));
@@ -138,5 +133,31 @@ public class Terminal {
         System.out.println("Média de avaliação:" + est.getAverage());
         System.out.println("Menor avaliação: " + est.getMin());
         System.out.println("Maior avaliação:" + est.getMax());
+    }
+
+    public void printMenu() {
+        List<SeasonData> seasons = searchSerieByName();
+
+        List<Episode> episodes = seasons.stream()
+                .flatMap(s -> s.episodes().stream()
+                        .map(ed -> new Episode(s.season(), ed)))
+                .collect(Collectors.toList());
+
+        printTopFiveEpisodes(seasons);
+
+        printTopFiveEpisodesWithNewConstructor(episodes);
+
+        printSearchEpisodesFromYearOnwardsResults(episodes);
+
+        printSeasonByEpisodeExcerptResults(episodes);
+
+        printSeasonsAverages(episodes);
+
+        printSerieStatistics(episodes);
+
+
+
+
+
     }
 }
