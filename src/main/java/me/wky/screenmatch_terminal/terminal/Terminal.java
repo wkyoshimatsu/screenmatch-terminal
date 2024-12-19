@@ -18,62 +18,70 @@ public class Terminal {
     private Scanner scanner = new Scanner(System.in);
     private APIConsumer apiConsumer = new APIConsumer();
     private DataConverter dataConverter = new DataConverter();
+    public void printMenu() {
+        var option = -1;
+        while (option != 0) {
+            var menu = """
+                
+                Bem vindo ao Screenmatch!
+                
+                Escolha uma opção:
+                1 - Buscar série
+                2 - Buscar episódio
+                3 - Listar séries buscadas
+                
+                0 - Sair
+                """;
 
-    public List<SeasonData> searchSerieByName() {
+            System.out.println(menu);
+
+            option = scanner.nextInt();
+            scanner.nextLine(); //Usado para limpar o buffer
+
+            switch (option) {
+                case 1 -> searchSeriesTitleExcerpt();
+                case 2 -> searchEpisodesBySeriesTitleExcerpt();
+                case 3 -> printSearchedSeries();
+                case 0 -> System.exit(0);
+                default -> System.out.println("Opção inválida");
+            }
+        }
+    }
+
+    private void searchSeriesTitleExcerpt(){
+        SeriesData seriesData = getSeriesData();
+        //seriesDataList.add(seriesData);
+        seriesRepository.save(new Series(seriesData));
+        System.out.println(seriesData);
+    }
+
+    private SeriesData getSeriesData() {
         System.out.println("Digite o nome da série desejada:");
-        var serieName = scanner.nextLine().toLowerCase().replace(" ", "+");
+        var seriesName = scanner.nextLine().toLowerCase().replace(" ", "+");
+        var json = apiConsumer.getJsonByUrl(API_URL + seriesName);
+        return dataConverter.convert(json, SeriesData.class);
+    }
 
-        var url = API_URL + serieName;
-        var json = apiConsumer.getJsonByUrl(url);
-        var serieData = dataConverter.convert(json, SerieData.class);
-        System.out.println(serieData);
+    private void searchEpisodesBySeriesTitleExcerpt(){
+        SeriesData seriesData = getSeriesData();
 
         List<SeasonData> seasons = new ArrayList<>();
 
-        for (int i = 1; i <= serieData.totalSeasons(); i++) {
-            url = API_URL + serieName + "&Season=" + i;
-            json = apiConsumer.getJsonByUrl(url);
+        for (int i = 1; i <= seriesData.totalSeasons(); i++) {
+            var json = apiConsumer.getJsonByUrl(API_URL + seriesData.title() + "&Season=" + i);
             var seasonData = dataConverter.convert(json, SeasonData.class);
             seasons.add(seasonData);
         }
-
-        /*
-        Using for loop:
-
-        for (SeasonData season : seasons) {
-            for (EpisodeData episode : season.episodes()) {
-                System.out.println(episode.title());
-            }
-         */
-
-        /*
-        Using for-each with lambda:
-
-        seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
-        */
-        return seasons;
+        seasons.forEach(System.out::println);
     }
 
-    public void printTopFiveEpisodes(List<SeasonData> seasons) {
-        System.out.println("\nTop 5 episódios com melhor avaliação:");
-
-        List<EpisodeData> episodesList = seasons.stream()
-                .flatMap(s -> s.episodes().stream())
+    private void printSearchedSeries(){
+        //List<Series> seriesList = seriesRepository.findAll();
+        List<Series> seriesList = seriesDataList.stream()
+                .map(Series::new)
                 .collect(Collectors.toList());
-
-        episodesList.stream()
-                .filter(e -> e.rating() != null && !e.rating().equals("N/A"))
-                .sorted(Comparator.comparing(EpisodeData::rating).reversed())
-                .limit(5)
-                .forEach(System.out::println);
-    }
-
-    public void printTopFiveEpisodesWithNewConstructor(List<Episode> episodes) {
-        System.out.println("\nTop 5 episódios com melhor avaliação (usando novo constutor):");
-
-        episodes.stream()
-                .sorted(Comparator.comparing(Episode::getRating).reversed())
-                .limit(5)
+        seriesList.stream()
+                .sorted(Comparator.comparing(Series::getGenre))
                 .forEach(System.out::println);
     }
 
