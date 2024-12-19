@@ -1,9 +1,7 @@
 package me.wky.screenmatch_terminal.terminal;
 
-import me.wky.screenmatch_terminal.model.Episode;
-import me.wky.screenmatch_terminal.model.EpisodeData;
-import me.wky.screenmatch_terminal.model.SeasonData;
-import me.wky.screenmatch_terminal.model.SerieData;
+import me.wky.screenmatch_terminal.model.*;
+import me.wky.screenmatch_terminal.repository.SeriesRepository;
 import me.wky.screenmatch_terminal.service.APIConsumer;
 import me.wky.screenmatch_terminal.service.DataConverter;
 
@@ -18,6 +16,14 @@ public class Terminal {
     private Scanner scanner = new Scanner(System.in);
     private APIConsumer apiConsumer = new APIConsumer();
     private DataConverter dataConverter = new DataConverter();
+    private List<SeriesData> seriesDataList = new ArrayList<>();
+    private SeriesRepository seriesRepository;
+
+
+    public Terminal(SeriesRepository seriesRepository) {
+        this.seriesRepository = seriesRepository;
+    }
+
     public void printMenu() {
         var option = -1;
         while (option != 0) {
