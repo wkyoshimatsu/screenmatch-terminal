@@ -14,13 +14,9 @@ import java.util.stream.Collectors;
 
 public class Terminal {
     private final String OMDBAPI_KEY= System.getenv("OMDBAPI_KEY");
-
     private final String API_URL = "http://www.omdbapi.com/?apikey=" + OMDBAPI_KEY + "&t=";
-
     private Scanner scanner = new Scanner(System.in);
-
     private APIConsumer apiConsumer = new APIConsumer();
-
     private DataConverter dataConverter = new DataConverter();
 
     public List<SeasonData> searchSerieByName() {
